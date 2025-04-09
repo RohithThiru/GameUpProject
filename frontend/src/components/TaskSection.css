@@ -1,0 +1,91 @@
+.task-section {
+    margin-top: 2rem;
+  }
+  
+  .task-section-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 24px;
+    color: #ffffff;
+    text-transform: capitalize;
+  }
+  
+  .task-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* ensures consistent min width */
+    gap: 20px;
+    justify-items: center; /* center cards horizontally */
+  }
+  
+  
+  .task-card {
+    width: 100%; /* fill grid cell */
+    max-width: 400px; /* cap width for readability */
+    background-color: #1e1e1e;
+    border: 1px solid #444;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    color: #ffffff;
+  }
+  
+  
+  .task-card:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+  }
+  
+  .task-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #ffffff;
+  }
+  
+  .task-desc {
+    font-size: 14px;
+    color: #ccc;
+    margin-bottom: 16px;
+  }
+  
+  .task-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #aaa;
+  }
+  
+  .task-due strong,
+  .task-xp strong {
+    color: #fff;
+  }
+  
+  .xp-points {
+    color: #4ade80; /* light green */
+    font-weight: 600;
+  }
+  
+  .delete-btn {
+    margin-top: 12px;
+    background-color: #dc2626; /* red */
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .delete-btn:hover {
+    background-color: #b91c1c;
+  }
+
+  .review-button{
+    background-color: #4ade80; /* light green */
+    padding: 5px;
+    border-radius: 5px;
+    border-width: 0px;
+    margin: 5px;
+  }
