@@ -9,6 +9,7 @@ const ParentDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TaskStatus>('pending');
   const [showModal, setShowModal] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingXp, setLoadingXp] = useState<boolean>(true); // New loading state for XP
 
   const [newTask, setNewTask] = useState({
     name: '',
@@ -17,6 +18,34 @@ const ParentDashboard: React.FC = () => {
     xp: ''
   });
 
+  const childId = localStorage.getItem('childId'); // Fetch the child ID from localStorage
+
+  // Fetch XP point
+  useEffect(() => {
+    const fetchXp = async () => {
+      if (childId) {
+        try {
+          const res = await fetch(`http://localhost:5000/api/children/${childId}`);
+          const data = await res.json();
+          if (res.ok) {
+            setXp(data.xp_point); // Set XP from the API response
+          } else {
+            console.error('Error fetching child XP:', data.message);
+          }
+        } catch (error) {
+          console.error('Error fetching XP:', error);
+        } finally {
+          setLoadingXp(false); // Stop loading once the XP data is fetched
+        }
+      } else {
+        setLoadingXp(false);
+      }
+    };
+
+    fetchXp();
+  }, [childId]); // Re-run if childId changes
+
+  // Existing code to fetch tasks
   const fetchTasks = async (status: TaskStatus) => {
     setLoading(true);
     try {
@@ -132,17 +161,16 @@ const ParentDashboard: React.FC = () => {
   };
 
   const handleLogout = () => {
-  localStorage.removeItem('parentId');
-  window.location.href = '/login'; // Adjust path as per your route
-};
-
+    localStorage.removeItem('parentId');
+    window.location.href = '/login'; // Adjust path as per your route
+  };
 
   return (
     <div className="bg-black text-white min-h-screen px-4 py-6 page">
       <div className="max-w-6xl mx-auto space-y-6">
         <div className="flex justify-between items-center mb-6 top">
           <div className="text-xl font-semibold">
-            XP: <span className="text-green-400">{xp}</span>
+            XP: {loadingXp ? <span>Loading...</span> : <span className="text-green-400">{xp}</span>}
           </div>
           <button
             onClick={handleAddTaskClick}
@@ -151,11 +179,11 @@ const ParentDashboard: React.FC = () => {
             Add Task
           </button>
           <button
-      onClick={handleLogout}
-      className="bg-red-600 hover:bg-red-500 px-4 py-2 rounded text-sm font-medium transition"
-    >
-      Logout
-    </button>
+            onClick={handleLogout}
+            className="bg-red-600 hover:bg-red-500 px-4 py-2 rounded text-sm font-medium transition"
+          >
+            Logout
+          </button>
         </div>
 
         <div className="tab-row">

@@ -49,7 +49,6 @@ const ChildrenDashboard: React.FC = () => {
       const data: ChildData = await res.json();
       if (res.ok) {
         setXp(data.xp_point);
-        
       } else {
         console.error('Failed to fetch XP or child not matched');
       
