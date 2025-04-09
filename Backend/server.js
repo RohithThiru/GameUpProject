@@ -284,4 +284,22 @@ app.post('/api/signup', async (req, res) => {
     }
   });
 
+  app.get('/api/children/:id', (req, res) => {
+    const { id } = req.params;
+  
+    db.execute('SELECT xp_point FROM children WHERE id = ?', [id], (error, results, fields) => {
+      if (error) {
+        console.error('Error fetching child XP:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+      }
+  
+      if (results.length === 0) {
+        return res.status(404).json({ message: 'Child not found' });
+      }
+      console.log(results[0]);
+      res.json(results[0]); // returns { xp_point: ... }
+    });
+  });
+  
+
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -16,6 +16,8 @@
     font-weight: 600;
     margin-bottom: 2rem;
     color: #00ffcc;
+    display: flex;
+    justify-content: space-between;
   }
   
   /* Tabs - Matching parent tab-row */
@@ -140,5 +142,29 @@
   .child-tab.active {
     font-weight: bold;
     border-bottom: 2px solid #000;
+  }
+  
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .logout-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .logout-btn:hover {
+    background-color: #c82333;
+  }
+  
+  .xp-point {
+    font-weight: bold;
+    font-size: 1.1rem;
   }
   

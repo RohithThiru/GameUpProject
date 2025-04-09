@@ -131,6 +131,12 @@ const ParentDashboard: React.FC = () => {
     }
   };
 
+  const handleLogout = () => {
+  localStorage.removeItem('parentId');
+  window.location.href = '/login'; // Adjust path as per your route
+};
+
+
   return (
     <div className="bg-black text-white min-h-screen px-4 py-6 page">
       <div className="max-w-6xl mx-auto space-y-6">
@@ -144,6 +150,12 @@ const ParentDashboard: React.FC = () => {
           >
             Add Task
           </button>
+          <button
+      onClick={handleLogout}
+      className="bg-red-600 hover:bg-red-500 px-4 py-2 rounded text-sm font-medium transition"
+    >
+      Logout
+    </button>
         </div>
 
         <div className="tab-row">

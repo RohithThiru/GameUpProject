@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './ChildDashboard.css';
+import { useNavigate } from 'react-router-dom';
 
 interface Task {
   id: string;
@@ -11,19 +12,25 @@ interface Task {
   parent_id: string;
 }
 
+interface ChildData {
+  id: string;
+  xp_point: number;
+}
+
 const ChildrenDashboard: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [xp, setXp] = useState<number>(0);
   const [activeTab, setActiveTab] = useState<'Pending' | 'Completed'>('Pending');
 
+  const navigate = useNavigate();
   const childId = localStorage.getItem('childId');
 
   const fetchTasks = async () => {
     try {
       const res = await fetch(`http://localhost:5000/api/children/tasks/${childId}`);
       const data = await res.json();
-
       if (res.ok) {
         setTasks(data.tasks);
       } else {
@@ -36,9 +43,27 @@ const ChildrenDashboard: React.FC = () => {
     }
   };
 
+  const fetchChildXp = async () => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/children/${childId}`);
+      const data: ChildData = await res.json();
+      if (res.ok) {
+        setXp(data.xp_point);
+        
+      } else {
+        console.error('Failed to fetch XP or child not matched');
+      
+      }
+    } catch (err) {
+      console.error('Error fetching XP:', err);
+     
+    }
+  };
+
   useEffect(() => {
     if (childId) {
       fetchTasks();
+      fetchChildXp();
     } else {
       setError('No child ID found in local storage');
       setLoading(false);
@@ -52,11 +77,11 @@ const ChildrenDashboard: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ childId }), // send childId here
+        body: JSON.stringify({ childId }),
       });
-  
+
       const data = await res.json();
-  
+
       if (res.ok) {
         alert('Task marked as completed!');
         setTasks((prevTasks) =>
@@ -64,6 +89,7 @@ const ChildrenDashboard: React.FC = () => {
             task.id === taskId ? { ...task, status: 'Completed' } : task
           )
         );
+        fetchChildXp(); // refresh XP
       } else {
         console.error('Failed to update task:', data.message);
       }
@@ -71,25 +97,30 @@ const ChildrenDashboard: React.FC = () => {
       console.error('Error updating task status:', err);
     }
   };
-  
+
+  const handleLogout = () => {
+    localStorage.removeItem('childId');
+    navigate('/login');
+  };
 
   const filteredTasks = tasks.filter((task) => {
     const status = task.status.toLowerCase();
-    if (activeTab === 'Pending') {
-      return status === 'pending';
-    }
-    if (activeTab === 'Completed') {
-      return status === 'completed' || status === 'reviewed';
-    }
+    if (activeTab === 'Pending') return status === 'pending';
+    if (activeTab === 'Completed') return status === 'completed' || status === 'reviewed';
     return false;
   });
-  
-  
+
   return (
     <div className="child-page">
       <div className="child-container">
         <div className="child-header">
           <h2>Child Dashboard</h2>
+          <div className="header-right">
+            <span className="xp-point">XP: {xp}</span>
+            <button className="btn btn-danger logout-btn" onClick={handleLogout}>
+              Logout
+            </button>
+          </div>
         </div>
 
         {/* Tabs */}
@@ -124,14 +155,13 @@ const ChildrenDashboard: React.FC = () => {
                   <span>XP: {task.xp}</span>
                 </div>
                 {task.status === 'pending' && (
-  <button
-    className="btn btn-success"
-    onClick={() => markTaskCompleted(task.id)}
-  >
-    Mark as Completed
-  </button>
-)}
-
+                  <button
+                    className="btn btn-success"
+                    onClick={() => markTaskCompleted(task.id)}
+                  >
+                    Mark as Completed
+                  </button>
+                )}
               </div>
             ))}
         </div>
